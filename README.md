@@ -1,4 +1,4 @@
-https://github.com/dg1223/Gamchha/actions/workflows/ci.yml/badge.svg
+[![Continuous Integration](https://github.com/dg1223/Gamchha/actions/workflows/ci.yml/badge.svg)](https://github.com/dg1223/Gamchha/actions/workflows/ci.yml)
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
