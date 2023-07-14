@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "889159632405",
+    "project_id": "gamchha-c9504",
+    "storage_bucket": "gamchha-c9504.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889159632405:android:1827f9e8fee65b8517701c",
+        "android_client_info": {
+          "package_name": "com.thebest.gamchha"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "889159632405-6bpi7re64k8cjmo4u64bbhuikge5ufn0.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA02XjtvDEHiHr2aNJrgueAG9EdkKKuXmo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "889159632405-6bpi7re64k8cjmo4u64bbhuikge5ufn0.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
