@@ -60,6 +60,7 @@ const RED_COLOR = 'red';
 const styles = StyleSheet.create({
   sectionHeader: {
     padding: 85,
+    marginBottom: '100%',
   },
   sectionTitle: {
     fontSize: 24,
