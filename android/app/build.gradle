@@ -80,9 +80,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.gamchha"
+    namespace "com.thebest.gamchha"
     defaultConfig {
-        applicationId "com.gamchha"
+        applicationId "com.thebest.gamchha"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

@@ -1,4 +1,4 @@
-package com.gamchha;
+package com.thebest.gamchha;
 
 import android.app.Application;
 import com.facebook.react.PackageList;
