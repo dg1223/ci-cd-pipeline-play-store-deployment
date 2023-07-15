@@ -66,8 +66,9 @@ jobs:
       - name: Build Android App Bundle
         run: cd android && ./gradlew bundleRelease --no-daemon
 
-      - name: Print Keystore File (debug)
-        run: keytool -list -v -keystore android/app/build/outputs/bundle/release/signingKey.jks -keypass ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }} -storepass ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+      - name: Check if keystore file is present (debug)
+        run: |
+          ls -a android/app/build/outputs/bundle/release
 
       - name: Sign App Bundle
         id: sign_app
