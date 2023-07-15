@@ -16,10 +16,6 @@ jobs:
       MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
     steps:
-      - name: See secrets
-        run: |
-          echo $MYAPP_UPLOAD_KEY_ALIAS
-
       - name: Checkout branch
         uses: actions/checkout@v3
 
