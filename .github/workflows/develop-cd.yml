@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     name: Development Distribution
+    env:
+      MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_ALIAS }}
+      MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+      MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+
     steps:
       - name: Checkout branch
         uses: actions/checkout@v3
