@@ -4,7 +4,8 @@
 
 # Xcode
 #
-build/
+# build/
+# !build/outputs/bundle/release
 *.pbxuser
 !default.pbxuser
 *.mode1v3
@@ -21,10 +22,12 @@ DerivedData
 *.ipa
 *.xcuserstate
 ios/.xcode.env.local
+!signingKey.jks
 
 # Android/IntelliJ
 #
-build/
+# build/
+# !build/outputs/bundle/release
 .idea
 .gradle
 local.properties
@@ -33,6 +36,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+!signingKey.jks
 
 # node.js
 #
