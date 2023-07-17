@@ -143,6 +143,6 @@ jobs:
           releaseFile: a${{steps.sign_app.outputs.signedReleaseFile}}
           track: internal
           inAppUpdatePriority: 3
-          userFraction: 0.5
+          # userFraction: 0.5
           whatsNewDirectory: android/release-notes/
-          releaseName: v${{ steps.increment-version.outputs.versionName }}
+          releaseName: v1.0.0
