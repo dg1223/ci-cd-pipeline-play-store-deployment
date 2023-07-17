@@ -41,7 +41,7 @@ jobs:
         run: npm list
       # Caching process complete
 
-      - name: Install dependencies
+      - name: Install node dependencies
         run: npm install
 
       - name: Lint check
@@ -49,6 +49,28 @@ jobs:
 
       - name: Run tests
         run: npm run test
+
+      - name: Read Version
+        id: read-version
+        run: |
+          echo "::set-output name=versionCode::$(node -p -e "require('./version.json').versionCode")"
+          echo "::set-output name=versionName::$(node -p -e "require('./version.json').versionName")"
+
+      - name: Increment Version
+        id: increment-version
+        run: |
+          echo "::set-output name=versionCode::$(node -p -e 'parseInt(${ steps.read-version.outputs.versionCode }) + 1')"
+          echo "::set-output name=versionName::$(node -p -e "'${{ steps.read-version.outputs.versionName }}'.replace(/(\\d+\\.\\d+\\.)(\\d+)/, (_, p1, p2) => p1 + (parseInt(p2) + 1))")"
+
+      - name: Update build.gradle
+        run: |
+          sed -i "s/versionCode .*/versionCode ${{ steps.increment-version.outputs.versionCode }}/" android/app/build.gradle
+          sed -i "s/versionName .*/versionName '${{ steps.increment-version.outputs.versionName }}'/" android/app/build.gradle
+
+      - name: Commit and Push Changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: devops - update versionCode and versionName [skip ci]
 
       - name: Cache Gradle Wrapper
         uses: actions/cache@v3
@@ -68,55 +90,53 @@ jobs:
         run: |
           cd android && chmod +x ./gradlew
 
-      - name: Generate App APK
-        run: |
-          cd android && ./gradlew assembleRelease --no-daemon
+      # - name: Generate App APK
+      #   run: |
+      #     cd android && ./gradlew assembleRelease --no-daemon
 
-      # - name: Build Android App Bundle
-      #   run: cd android && ./gradlew bundleRelease --no-daemon
-
-      - name: Check if keystore file is present (debug)
-        run: |
-          ls -a android/app/build/outputs/apk/release
-          # ls -a android/app/build/outputs/bundle/release
-
-      - name: Sign generated APK
-        id: sign_app
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-          alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
-
-      - name: Check app directory after signing (debug)
-        run: |
-          ls -a android/app/build/outputs/apk/release
-
-      # - name: Sign App Bundle
+      # - name: Sign generated APK
       #   id: sign_app
       #   uses: r0adkll/sign-android-release@v1
       #   with:
-      #     releaseDirectory: android/app/build/outputs/bundle/release
+      #     releaseDirectory: android/app/build/outputs/apk/release
       #     signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
       #     alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
       #     keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
       #     keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
-      # - name: Upload Artifact
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: Signed App Bundle
-      #     path: ${{steps.sign_app.outputs.signedReleaseFile}}
+      # - name: Check app directory after signing (debug)
+      #   run: |
+      #     ls -a android/app/build/outputs/apk/release
 
-      # - name: Deploy to Play Store (Internal testing)
-      #   uses: r0adkll/upload-google-play@v1
-      #   with:
-      #     serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
-      #     packageName: com.thebest.gamchha
-      #     releaseFile: a${{steps.sign_app.outputs.signedReleaseFile}}
-      #     track: beta
-      #     inAppUpdatePriority: 3
-      #     userFraction: 0.5
-      #     whatsNewDirectory: android/release-notes/
+      - name: Build Android App Bundle
+        run: cd android && ./gradlew bundleRelease --no-daemon
+
+      - name: Sign App Bundle
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Signed App Bundle
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Deploy to Play Store (Internal testing)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
+          # The packageName must already exist in the play console account, so make sure you upload a manual apk or aab first through the console
+          # https://github.com/r0adkll/upload-google-play/tree/v1/
+          packageName: com.thebest.gamchha
+          releaseFile: a${{steps.sign_app.outputs.signedReleaseFile}}
+          track: internal
+          inAppUpdatePriority: 3
+          userFraction: 0.5
+          whatsNewDirectory: android/release-notes/
+          releaseName: v${{ steps.increment-version.outputs.versionName }}
