@@ -140,7 +140,7 @@ jobs:
           # The packageName must already exist in the play console account, so make sure you upload a manual apk or aab first through the console
           # https://github.com/r0adkll/upload-google-play/tree/v1/
           packageName: com.thebest.gamchha
-          releaseFile: a${{steps.sign_app.outputs.signedReleaseFile}}
+          releaseFile: ${{steps.sign_app.outputs.signedReleaseFile}}
           track: internal
           inAppUpdatePriority: 3
           # userFraction: 0.5
