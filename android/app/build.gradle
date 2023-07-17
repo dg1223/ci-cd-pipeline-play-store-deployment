@@ -93,9 +93,9 @@ android {
             // You need to specify either an absolute path or include the
             // keystore file in the same directory as the build.gradle file.
             storeFile file("gamchhaappkey.keystore")
-            keyAlias MYAPP_UPLOAD_KEY_ALIAS
-            storePassword MYAPP_UPLOAD_STORE_PASSWORD
-            keyPassword MYAPP_UPLOAD_KEY_PASSWORD
+            keyAlias System.getenv('MYAPP_UPLOAD_KEY_ALIAS')
+            storePassword System.getenv('MYAPP_UPLOAD_STORE_PASSWORD')
+            keyPassword System.getenv('MYAPP_UPLOAD_KEY_PASSWORD')
         }
 
     }
