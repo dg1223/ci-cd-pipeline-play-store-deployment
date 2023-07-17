@@ -133,6 +133,11 @@ jobs:
           name: Signed App Bundle
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
+      - name: Check directory (debug)
+        run: |
+          pwd
+          ls -a android/app/build/outputs/bundle/release
+
       - name: Deploy to Play Store (Internal testing)
         uses: r0adkll/upload-google-play@v1
         with:
