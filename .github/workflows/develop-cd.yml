@@ -53,8 +53,10 @@ jobs:
       - name: Read Version
         id: read-version
         run: |
-          echo "::set-output name=versionCode::$(node -p -e "require('./version.json').versionCode")"
-          echo "::set-output name=versionName::$(node -p -e "require('./version.json').versionName")"
+          echo "::set-output name=versionCode::$(jq -r '.versionCode' version.json)"
+          echo "::set-output name=versionName::$(jq -r '.versionName' version.json)"
+          # echo "::set-output name=versionCode::$(jq -r '.versionCode' version.json)"
+          # echo "::set-output name=versionName::$(node -p -e "require('./version.json').versionName")"
 
       - name: Increment Version
         id: increment-version
