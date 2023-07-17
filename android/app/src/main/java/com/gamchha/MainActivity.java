@@ -1,4 +1,4 @@
-package com.gamchha;
+package com.thebest.gamchha;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
