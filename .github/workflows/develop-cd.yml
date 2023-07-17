@@ -148,6 +148,7 @@ jobs:
           releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
           track: internal
           inAppUpdatePriority: 3
+          status: draft
           # userFraction: 0.5
           whatsNewDirectory: android/release-notes/
           releaseName: v1.0.0
