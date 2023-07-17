@@ -146,7 +146,7 @@ jobs:
           # https://github.com/r0adkll/upload-google-play/tree/v1/
           packageName: com.thebest.gamchha
           releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
-          track: internalsharing
+          track: internal
           inAppUpdatePriority: 3
           status: draft
           # userFraction: 0.5
