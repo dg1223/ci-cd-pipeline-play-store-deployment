@@ -93,9 +93,9 @@ android {
             // You need to specify either an absolute path or include the
             // keystore file in the same directory as the build.gradle file.
             storeFile file("gamchhaappkey.keystore")
-            storePassword project.findProperty("ANDROID_SIGNING_STORE_PASSWORD").toString()
-            keyAlias project.findProperty("ANDROID_SIGNING_ALIAS").toString()
-            keyPassword project.findProperty("ANDROID_SIGNING_KEY_PASSWORD").toString()
+            storePassword ${ANDROID_SIGNING_STORE_PASSWORD}
+            keyAlias ${ANDROID_SIGNING_ALIAS}
+            keyPassword ${ANDROID_SIGNING_KEY_PASSWORD}
         }
 
     }
