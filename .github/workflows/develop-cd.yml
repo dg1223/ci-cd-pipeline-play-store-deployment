@@ -50,33 +50,33 @@ jobs:
       - name: Run tests
         run: npm run test
 
-      - name: Read Version
-        id: read-version
-        run: |
-          echo "::set-output name=versionCode::$(jq -r '.versionCode' version.json)"
-          echo "::set-output name=versionName::$(jq -r '.versionName' version.json)"
+      # - name: Read Version
+      #   id: read-version
+      #   run: |
+      #     echo "::set-output name=versionCode::$(jq -r '.versionCode' version.json)"
+      #     echo "::set-output name=versionName::$(jq -r '.versionName' version.json)"
 
-          # echo "::set-output name=versionCode::$(jq -r '.versionCode' version.json)"
-          # echo "::set-output name=versionName::$(node -p -e "require('./version.json').versionName")"
+      #     # echo "::set-output name=versionCode::$(jq -r '.versionCode' version.json)"
+      #     # echo "::set-output name=versionName::$(node -p -e "require('./version.json').versionName")"
 
-      - name: Increment Version
-        id: increment-version
-        run: |
-          echo "::set-output name=versionCode::$(node -p \"parseInt('${{ steps.read-version.outputs.versionCode }}') + 1\")"
-          echo "::set-output name=versionName::$(node -p \"'${{ steps.read-version.outputs.versionName }}'.replace(/(\\d+\\.\\d+\\.)(\\d+)/, (_, p1, p2) => p1 + (parseInt(p2) + 1))\")"
+      # - name: Increment Version
+      #   id: increment-version
+      #   run: |
+      #     echo "::set-output name=versionCode::$(node -p \"parseInt('${{ steps.read-version.outputs.versionCode }}') + 1\")"
+      #     echo "::set-output name=versionName::$(node -p \"'${{ steps.read-version.outputs.versionName }}'.replace(/(\\d+\\.\\d+\\.)(\\d+)/, (_, p1, p2) => p1 + (parseInt(p2) + 1))\")"
 
-          # echo "::set-output name=versionCode::$(node -p -e 'parseInt(${ steps.read-version.outputs.versionCode }) + 1')"
-          # echo "::set-output name=versionName::$(node -p -e "'${{ steps.read-version.outputs.versionName }}'.replace(/(\\d+\\.\\d+\\.)(\\d+)/, (_, p1, p2) => p1 + (parseInt(p2) + 1))")"
+      #     # echo "::set-output name=versionCode::$(node -p -e 'parseInt(${ steps.read-version.outputs.versionCode }) + 1')"
+      #     # echo "::set-output name=versionName::$(node -p -e "'${{ steps.read-version.outputs.versionName }}'.replace(/(\\d+\\.\\d+\\.)(\\d+)/, (_, p1, p2) => p1 + (parseInt(p2) + 1))")"
 
-      - name: Update build.gradle
-        run: |
-          sed -i "s/versionCode .*/versionCode ${{ steps.increment-version.outputs.versionCode }}/" android/app/build.gradle
-          sed -i "s/versionName .*/versionName '${{ steps.increment-version.outputs.versionName }}'/" android/app/build.gradle
+      # - name: Update build.gradle
+      #   run: |
+      #     sed -i "s/versionCode .*/versionCode ${{ steps.increment-version.outputs.versionCode }}/" android/app/build.gradle
+      #     sed -i "s/versionName .*/versionName '${{ steps.increment-version.outputs.versionName }}'/" android/app/build.gradle
 
-      - name: Commit and Push Changes
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: devops - update versionCode and versionName [skip ci]
+      # - name: Commit and Push Changes
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: devops - update versionCode and versionName [skip ci]
 
       - name: Cache Gradle Wrapper
         uses: actions/cache@v3

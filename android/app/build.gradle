@@ -91,10 +91,10 @@ android {
         applicationId "com.thebest.gamchha"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // versionCode 1
-        // versionName "1.0.0"
-        versionCode getVersionCode()
-        versionName getVersionName()
+        versionCode 1
+        versionName "1.0.0"
+        // versionCode getVersionCode()
+        // versionName getVersionName()
     }
     signingConfigs {
         debug {
