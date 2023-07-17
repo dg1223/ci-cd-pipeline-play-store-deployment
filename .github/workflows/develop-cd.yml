@@ -68,36 +68,55 @@ jobs:
         run: |
           cd android && chmod +x ./gradlew
 
-      - name: Build Android App Bundle
-        run: cd android && ./gradlew bundleRelease --no-daemon
+      - name: Generate App APK
+        run: |
+          cd android && ./gradlew assembleRelease --no-daemon
+
+      # - name: Build Android App Bundle
+      #   run: cd android && ./gradlew bundleRelease --no-daemon
 
       - name: Check if keystore file is present (debug)
         run: |
-          ls -a android/app/build/outputs/bundle/release
+          ls -a android/app/build/outputs/apk/release
+          # ls -a android/app/build/outputs/bundle/release
 
-      - name: Sign App Bundle
+      - name: Sign generated APK
         id: sign_app
         uses: r0adkll/sign-android-release@v1
         with:
-          releaseDirectory: android/app/build/outputs/bundle/release
+          releaseDirectory: android/app/build/outputs/apk/release
           signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
           alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: Signed App Bundle
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+      - name: Check app directory after signing (debug)
+        run: |
+          ls -a android/app/build/outputs/apk/release
 
-      - name: Deploy to Play Store (Internal testing)
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
-          packageName: com.thebest.gamchha
-          releaseFile: a${{steps.sign_app.outputs.signedReleaseFile}}
-          track: beta
-          inAppUpdatePriority: 3
-          userFraction: 0.5
-          whatsNewDirectory: android/release-notes/
+      # - name: Sign App Bundle
+      #   id: sign_app
+      #   uses: r0adkll/sign-android-release@v1
+      #   with:
+      #     releaseDirectory: android/app/build/outputs/bundle/release
+      #     signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+      #     alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
+      #     keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: Signed App Bundle
+      #     path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      # - name: Deploy to Play Store (Internal testing)
+      #   uses: r0adkll/upload-google-play@v1
+      #   with:
+      #     serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
+      #     packageName: com.thebest.gamchha
+      #     releaseFile: a${{steps.sign_app.outputs.signedReleaseFile}}
+      #     track: beta
+      #     inAppUpdatePriority: 3
+      #     userFraction: 0.5
+      #     whatsNewDirectory: android/release-notes/
