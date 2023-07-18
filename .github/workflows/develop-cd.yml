@@ -148,6 +148,6 @@ jobs:
           releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
           track: internal
           inAppUpdatePriority: 3
-          status: complete
+          status: completed
           whatsNewDirectory: android/release-notes/
           releaseName: v1.0.2
