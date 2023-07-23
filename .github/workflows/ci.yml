@@ -99,6 +99,8 @@ jobs:
       # Start the build process
       - name: Make Gradlew Executable
         run: |
+          pwd
+          ls -a
           cd android && chmod +x ./gradlew
 
       # - name: Generate App APK
