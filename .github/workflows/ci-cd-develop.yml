@@ -17,7 +17,7 @@ jobs:
       - name: Check for README changes
         id: check-readme-changes
         run: |
-          if [[ $(git diff --name-only ${github.event.before}..${github.sha} | grep -vE '^(README\.md|.*\.yml)$') == "" && $(git diff --name-only ${github.event.before}..${github.sha} | grep -E '^(README\.md|.*\.yml)$') != "" ]]; then
+          if [[ $(git diff --name-only ${{ github.event.before }}..${{ github.sha }} | grep -vE '^(README\.md|.*\.yml)$') == "" && $(git diff --name-only ${{ github.event.before }}..${{ github.sha }} | grep -E '^(README\.md|.*\.yml)$') != "" ]]; then
             echo "Only README.md or .yml files have been updated. Skipping the CI/CD workflow."
             exit 0
           fi
