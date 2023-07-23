@@ -125,7 +125,9 @@ jobs:
       #     ls -a android/app/build/outputs/apk/release
 
       - name: Build Android App Bundle
-        run: cd android && ./gradlew bundleRelease --no-daemon
+        run: |
+          ls -a /home/runner/work/Gamchha/Gamchha
+          cd android && ./gradlew bundleRelease --no-daemon
 
       - name: Sign App Bundle
         id: sign_app
