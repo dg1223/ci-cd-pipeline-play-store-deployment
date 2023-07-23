@@ -55,6 +55,9 @@ jobs:
       MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
     steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
       # - name: Read Version
       #   id: read-version
       #   run: |
