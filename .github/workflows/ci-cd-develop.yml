@@ -17,8 +17,12 @@ jobs:
       - name: Check for README changes
         id: check-readme-changes
         run: |
+          # Get the SHA of the current commit (HEAD) and its parent commit (HEAD^)
+          CURRENT_COMMIT=$(git rev-parse HEAD)
+          PARENT_COMMIT=$(git rev-parse HEAD^)
+
           # Get the list of changed files for the current commit and its parent commit
-          CHANGED_FILES=$(git diff --name-only HEAD^..HEAD)
+          CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r $CURRENT_COMMIT $PARENT_COMMIT)
 
           # Check if 'README.md' or '.yml' files are the only files changed
           if [[ $CHANGED_FILES =~ ^(README\.md|.*\.yml)$ && ! $CHANGED_FILES =~ [^[:space:]] ]]; then
