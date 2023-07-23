@@ -43,3 +43,24 @@ jobs:
 
       - name: Run tests
         run: npm run test
+
+  trigger-cd-on-success:
+    needs: lint-and-test
+    if: success()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger CD Workflow
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GH_TOKEN }}
+          script: |
+            # This action internally uses the provided github-token to authenticate API requests.
+            # We use it to trigger the cd.yml workflow.
+            const response = await octokit.actions.createWorkflowDispatch({
+              owner: 'dg1223',
+              repo: 'Gamchha',
+              workflow_id: 'develop-cd.yml',
+              ref: 'develop',
+              inputs: {}
+            });
+            console.log(response);

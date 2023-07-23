@@ -1,9 +1,9 @@
 name: Dev Deployment
 
-# on:
-#   push:
-#     branches:
-#       - develop
+on:
+  push:
+    branches:
+      - develop
 
 jobs:
   dev-distribution:
