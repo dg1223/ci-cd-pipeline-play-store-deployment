@@ -46,21 +46,114 @@ jobs:
 
   trigger-cd-on-success:
     needs: lint-and-test
-    if: success()
+    # default action is success()
+    # if: success()
     runs-on: ubuntu-latest
+    env:
+      MYAPP_UPLOAD_KEY_ALIAS: ${{ secrets.ANDROID_SIGNING_ALIAS }}
+      MYAPP_UPLOAD_STORE_PASSWORD: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+      MYAPP_UPLOAD_KEY_PASSWORD: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+
     steps:
-      - name: Trigger CD Workflow
-        uses: actions/github-script@v6
+      # - name: Read Version
+      #   id: read-version
+      #   run: |
+      #     echo "::set-output name=versionCode::$(jq -r '.versionCode' version.json)"
+      #     echo "::set-output name=versionName::$(jq -r '.versionName' version.json)"
+
+      #     # echo "::set-output name=versionCode::$(jq -r '.versionCode' version.json)"
+      #     # echo "::set-output name=versionName::$(node -p -e "require('./version.json').versionName")"
+
+      # - name: Increment Version
+      #   id: increment-version
+      #   run: |
+      #     echo "::set-output name=versionCode::$(node -p \"parseInt('${{ steps.read-version.outputs.versionCode }}') + 1\")"
+      #     echo "::set-output name=versionName::$(node -p \"'${{ steps.read-version.outputs.versionName }}'.replace(/(\\d+\\.\\d+\\.)(\\d+)/, (_, p1, p2) => p1 + (parseInt(p2) + 1))\")"
+
+      #     # echo "::set-output name=versionCode::$(node -p -e 'parseInt(${ steps.read-version.outputs.versionCode }) + 1')"
+      #     # echo "::set-output name=versionName::$(node -p -e "'${{ steps.read-version.outputs.versionName }}'.replace(/(\\d+\\.\\d+\\.)(\\d+)/, (_, p1, p2) => p1 + (parseInt(p2) + 1))")"
+
+      # - name: Update build.gradle
+      #   run: |
+      #     sed -i "s/versionCode .*/versionCode ${{ steps.increment-version.outputs.versionCode }}/" android/app/build.gradle
+      #     sed -i "s/versionName .*/versionName '${{ steps.increment-version.outputs.versionName }}'/" android/app/build.gradle
+
+      # - name: Commit and Push Changes
+      #   uses: stefanzweifel/git-auto-commit-action@v4
+      #   with:
+      #     commit_message: devops - update versionCode and versionName [skip ci]
+
+      - name: Cache Gradle Wrapper
+        uses: actions/cache@v3
         with:
-          github-token: ${{ secrets.GH_TOKEN }}
-          script: |
-            # This action internally uses the provided github-token to authenticate API requests.
-            # We use it to trigger the cd.yml workflow.
-            const response = await octokit.actions.createWorkflowDispatch({
-              owner: 'dg1223',
-              repo: 'Gamchha',
-              workflow_id: 'develop-cd.yml',
-              ref: 'develop',
-              inputs: {}
-            });
-            console.log(response);
+          path: ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-caches-
+
+      # Start the build process
+      - name: Make Gradlew Executable
+        run: |
+          cd android && chmod +x ./gradlew
+
+      # - name: Generate App APK
+      #   run: |
+      #     cd android && ./gradlew assembleRelease --no-daemon
+
+      # - name: Sign generated APK
+      #   id: sign_app
+      #   uses: r0adkll/sign-android-release@v1
+      #   with:
+      #     releaseDirectory: android/app/build/outputs/apk/release
+      #     signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+      #     alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
+      #     keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+      #     keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+
+      # - name: Check app directory after signing (debug)
+      #   run: |
+      #     ls -a android/app/build/outputs/apk/release
+
+      - name: Build Android App Bundle
+        run: cd android && ./gradlew bundleRelease --no-daemon
+
+      - name: Sign App Bundle
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
+        with:
+          releaseDirectory: android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Signed App Bundle
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Check directory (debug)
+        run: |
+          pwd
+          ls -a android/app/build/outputs/bundle/release
+
+      - name: Deploy to Play Store (Internal testing)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
+          # The packageName must already exist in the play console account, so make sure you upload a manual apk or aab first through the console
+          # https://github.com/r0adkll/upload-google-play/tree/v1/
+          packageName: com.thebest.gamchha
+          releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
+          track: internal
+          inAppUpdatePriority: 3
+          status: draft
+          # userFraction: 0.5
+          whatsNewDirectory: android/release-notes/
+          releaseName: v1.0.2
