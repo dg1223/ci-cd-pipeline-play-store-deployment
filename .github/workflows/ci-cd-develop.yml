@@ -17,9 +17,11 @@ jobs:
       - name: Check for README changes
         id: check-readme-changes
         run: |
-          git diff-tree --no-commit-id --name-only -r $(git rev-parse HEAD) | grep -vE '^(README\.md|.*\.yml)$'
-          CHANGED_FILES=$?
-          if [ $CHANGED_FILES -eq 1 ]; then
+          # Get the list of changed files for the current commit and its parent commit
+          CHANGED_FILES=$(git diff --name-only HEAD^..HEAD)
+
+          # Check if 'README.md' or '.yml' files are the only files changed
+          if [[ $CHANGED_FILES =~ ^(README\.md|.*\.yml)$ && ! $CHANGED_FILES =~ [^[:space:]] ]]; then
             echo "Only README.md or .yml files have been updated. Skipping the CI/CD workflow."
             exit 0
           fi
