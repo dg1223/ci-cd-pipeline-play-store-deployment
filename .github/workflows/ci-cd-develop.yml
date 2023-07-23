@@ -1,4 +1,4 @@
-name: Continuous Integration
+name: Dev CI/CD
 
 on:
   push:
@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  lint-and-test:
+  test:
     runs-on: ubuntu-latest
 
     steps:
@@ -44,8 +44,8 @@ jobs:
       - name: Run tests
         run: npm run test
 
-  trigger-cd-on-success:
-    needs: lint-and-test
+  deploy:
+    needs: test
     # default action is success()
     # if: success()
     runs-on: ubuntu-latest
@@ -129,10 +129,7 @@ jobs:
 
       # Start the build process
       - name: Make Gradlew Executable
-        run: |
-          pwd
-          ls -a
-          cd android && chmod +x ./gradlew
+        run: cd android && chmod +x ./gradlew
 
       # - name: Generate App APK
       #   run: |
@@ -153,9 +150,7 @@ jobs:
       #     ls -a android/app/build/outputs/apk/release
 
       - name: Build Android App Bundle
-        run: |
-          ls -a /home/runner/work/Gamchha/Gamchha
-          cd android && ./gradlew bundleRelease --no-daemon
+        run: cd android && ./gradlew bundleRelease --no-daemon
 
       - name: Sign App Bundle
         id: sign_app
@@ -191,4 +186,4 @@ jobs:
           status: draft
           # userFraction: 0.5
           whatsNewDirectory: android/release-notes/
-          releaseName: v1.0.2
+          releaseName: v1.0.3
