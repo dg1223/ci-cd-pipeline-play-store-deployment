@@ -6,6 +6,24 @@ on:
       - develop
 
 jobs:
+  # Don't run CI/CD if only README.md is updated
+  check_readme_changes:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v3
+
+      - name: Check for README changes
+        id: check-readme-changes
+        run: |
+          if [[ $(git diff --name-only ${{ github.event.before }}...${{ github.sha }} | grep -vE '^README\.md$') == "" ]] && [[ -n $(git diff --name-only ${{ github.event.before }}...${{ github.sha }} | grep -E '^README\.md$') ]]; then
+            echo "Only README.md file has been updated. Skipping the CI/CD workflow."
+            exit 0
+          fi
+          echo "Changes to files other than README.md detected. Proceeding with the CI/CD workflow."
+        continue-on-error: true
+
   test:
     runs-on: ubuntu-latest
 
@@ -168,11 +186,6 @@ jobs:
           name: Signed App Bundle
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-      - name: Check directory (debug)
-        run: |
-          pwd
-          ls -a android/app/build/outputs/bundle/release
-
       - name: Deploy to Play Store (Internal testing)
         uses: r0adkll/upload-google-play@v1
         with:
@@ -186,4 +199,4 @@ jobs:
           status: draft
           # userFraction: 0.5
           whatsNewDirectory: android/release-notes/
-          releaseName: v1.0.3
+          releaseName: v1.0.4
