@@ -1,11 +1,9 @@
 name: Continuous Integration
 
 on:
-  pull_request:
+  push:
     branches:
       - develop
-      - alpha
-      - main
 
 jobs:
   lint-and-test:
