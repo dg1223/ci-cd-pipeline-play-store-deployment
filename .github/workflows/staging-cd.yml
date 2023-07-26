@@ -5,7 +5,7 @@ on:
     branches:
       - staging
   push:
-    branches:
+    branches-ignore:
       - develop
       - main
 
