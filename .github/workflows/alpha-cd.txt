@@ -1,9 +1,9 @@
-name: Dev Deployment
+name: Alpha Deployment
 
 on:
   push:
     branches:
-      - develop
+      - alpha
 
 jobs:
   dev-distribution:
