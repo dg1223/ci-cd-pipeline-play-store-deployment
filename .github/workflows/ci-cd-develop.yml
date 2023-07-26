@@ -18,18 +18,18 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Check for README changes
+      - name: Check for README, yml or txt changes
         id: set_output
         run: |
           # Get the list of changed files between the base and head branches
           CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
           # Check if 'README.md' or '.yml' files are the only files changed
-          if [[ ${CHANGED_FILES} =~ ^(README\.md|.*\.yml)$ && ! ${CHANGED_FILES} =~ ^(?!.*(README\.md|.*\.yml)).*$ ]]; then
-            echo "Only README.md or .yml files have been updated. Skipping the CI/CD workflow."
+          if [[ ${CHANGED_FILES} =~ ^(README\.md|.*\.yml|.*\.txt)$ && ! ${CHANGED_FILES} =~ ^(?!.*(README\.md|.*\.yml|.*\.txt)).*$ ]]; then
+            echo "Only README.md or .yml or .txt files have been updated. Skipping the CI/CD workflow."
             # GITHUB_OUTPUT is a default GitHub env. variable
             echo "run_jobs=false" >> ${GITHUB_OUTPUT}
           else
-            echo "Changes to files other than README.md or *.yml detected. Proceeding with the CI/CD workflow."
+            echo "Changes to files other than README.md or *.yml or .txt detected. Proceeding with the CI/CD workflow."
             echo "run_jobs=true" >> ${GITHUB_OUTPUT}
           fi
 
