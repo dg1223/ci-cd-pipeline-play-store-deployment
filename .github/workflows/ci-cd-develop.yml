@@ -18,7 +18,7 @@ jobs:
         id: check-readme-changes
         run: |
           # Get the list of changed files between the base and head branches
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }}...${{ github.sha }})
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
           echo ${CHANGED_FILES}
 
           # Check if 'README.md' or '.yml' files are the only files changed
