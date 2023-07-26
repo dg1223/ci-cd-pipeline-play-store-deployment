@@ -4,6 +4,11 @@ on:
   push:
     branches:
       - develop
+  pull_request:
+    # Prevent triggering this workflow for PRs
+    branches-ignore:
+      - staging
+      - main
 
 jobs:
   # Don't run CI/CD if only README.md and/or any .yml file is updated
