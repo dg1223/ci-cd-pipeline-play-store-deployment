@@ -6,6 +6,7 @@ on:
       - staging
   push:
     branches-ignore:
+      # Prevent triggering this workflow for any code push
       - develop
       - staging
       - main
