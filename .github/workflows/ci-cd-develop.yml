@@ -159,65 +159,65 @@ jobs:
       - name: Make Gradlew Executable
         run: cd android && chmod +x ./gradlew
 
-      - name: Generate App APK
-        run: |
-          cd android && ./gradlew assembleRelease --no-daemon
-
-      - name: Sign generated APK
-        id: sign_app
-        uses: r0adkll/sign-android-release@v1
-        with:
-          releaseDirectory: android/app/build/outputs/apk/release
-          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-          alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
-          keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
-          keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
-
-      # - name: Check app directory after signing (debug)
+      # - name: Generate App APK
       #   run: |
-      #     ls -a android/app/build/outputs/apk/release
+      #     cd android && ./gradlew assembleRelease --no-daemon
 
-      # - name: Build Android App Bundle
-      #   run: cd android && ./gradlew bundleRelease --no-daemon
-
-      # - name: Sign App Bundle
+      # - name: Sign generated APK
       #   id: sign_app
       #   uses: r0adkll/sign-android-release@v1
       #   with:
-      #     releaseDirectory: android/app/build/outputs/bundle/release
+      #     releaseDirectory: android/app/build/outputs/apk/release
       #     signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
       #     alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
       #     keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
       #     keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
-      ## Distribute app to Firebase App Distribution for testing
-      ## Use google play internal track if you have a google play account
-      ## (uncomment the sections below if you want to use Play Store)
-      - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
+      # - name: Check app directory after signing (debug)
+      #   run: |
+      #     ls -a android/app/build/outputs/apk/release
+
+      - name: Build Android App Bundle
+        run: cd android && ./gradlew bundleRelease --no-daemon
+
+      - name: Sign App Bundle
+        id: sign_app
+        uses: r0adkll/sign-android-release@v1
         with:
-          appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
-          token: ${{secrets.ANDROID_FIREBASE_TOKEN}}
-          groups: testers
-          file: ${{steps.sign_app.outputs.signedReleaseFile}}
+          releaseDirectory: android/app/build/outputs/bundle/release
+          signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
+          alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
+          keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
+          keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
-      # - name: Upload Artifact
-      #   uses: actions/upload-artifact@v3
+      # ## Distribute app to Firebase App Distribution for testing
+      # ## Use google play internal track if you have a google play account
+      # ## (uncomment the sections below if you want to use Play Store)
+      # - name: Upload artifact to Firebase App Distribution
+      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
       #   with:
-      #     name: Signed App Bundle
-      #     path: ${{steps.sign_app.outputs.signedReleaseFile}}
+      #     appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
+      #     token: ${{secrets.ANDROID_FIREBASE_TOKEN}}
+      #     groups: testers
+      #     file: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-      # - name: Deploy to Play Store (Internal testing)
-      #   uses: r0adkll/upload-google-play@v1
-      #   with:
-      #     serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
-      #     # The packageName must already exist in the play console account, so make sure you upload a manual apk or aab first through the console
-      #     # https://github.com/r0adkll/upload-google-play/tree/v1/
-      #     packageName: com.thebest.gamchha
-      #     releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
-      #     track: internal
-      #     inAppUpdatePriority: 3
-      #     status: draft
-      #     # userFraction: 0.5
-      #     whatsNewDirectory: android/release-notes/
-      #     releaseName: v1.0.4
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Signed App Bundle
+          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      - name: Deploy to Play Store (Internal testing)
+        uses: r0adkll/upload-google-play@v1
+        with:
+          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
+          # The packageName must already exist in the play console account, so make sure you upload a manual apk or aab first through the console
+          # https://github.com/r0adkll/upload-google-play/tree/v1/
+          packageName: com.thebest.gamchha
+          releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
+          track: internal
+          inAppUpdatePriority: 3
+          status: draft
+          # userFraction: 0.5
+          whatsNewDirectory: android/release-notes/
+          releaseName: v1.0.4
