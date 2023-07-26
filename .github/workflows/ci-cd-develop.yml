@@ -21,7 +21,7 @@ jobs:
           # CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }})
           CURRENT_COMMIT=$(git rev-parse HEAD)
           echo ${CURRENT_COMMIT}
-          CHANGED_FILES=$(git diff --name-only HEAD^..HEAD)
+          CHANGED_FILES=$(git diff --name-only HEAD^)
           echo ${CHANGED_FILES}
 
           # Check if 'README.md' or '.yml' files are the only files changed
