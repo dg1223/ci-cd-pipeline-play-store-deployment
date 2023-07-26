@@ -7,7 +7,7 @@ on:
 
 jobs:
   # Don't run CI/CD if only README.md and/or any .yml file is updated
-  check_readme_yml_changes:
+  check_readme_yml_txt_changes:
     runs-on: ubuntu-latest
     outputs:
       run_rest_jobs: ${{ steps.set_output.outputs.run_jobs }}
@@ -34,8 +34,8 @@ jobs:
           fi
 
   test:
-    needs: check_readme_yml_changes
-    if: needs.check_readme_yml_changes.outputs.run_rest_jobs == 'true'
+    needs: check_readme_yml_txt_changes
+    if: needs.check_readme_yml_txt_changes.outputs.run_rest_jobs == 'true'
     runs-on: ubuntu-latest
 
     steps:
@@ -190,23 +190,34 @@ jobs:
           keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
 
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+      ## Distribute app to Firebase App Distribution for testing
+      ## Use google play internal track if you have a google play account
+      ## (uncomment the sections below if you want to use Play Store)
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
-          name: Signed App Bundle
-          path: ${{steps.sign_app.outputs.signedReleaseFile}}
+          appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
+          token: ${{secrets.ANDROID_FIREBASE_TOKEN}}
+          groups: testers
+          file: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-      - name: Deploy to Play Store (Internal testing)
-        uses: r0adkll/upload-google-play@v1
-        with:
-          serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
-          # The packageName must already exist in the play console account, so make sure you upload a manual apk or aab first through the console
-          # https://github.com/r0adkll/upload-google-play/tree/v1/
-          packageName: com.thebest.gamchha
-          releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
-          track: internal
-          inAppUpdatePriority: 3
-          status: draft
-          # userFraction: 0.5
-          whatsNewDirectory: android/release-notes/
-          releaseName: v1.0.4
+      # - name: Upload Artifact
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: Signed App Bundle
+      #     path: ${{steps.sign_app.outputs.signedReleaseFile}}
+
+      # - name: Deploy to Play Store (Internal testing)
+      #   uses: r0adkll/upload-google-play@v1
+      #   with:
+      #     serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
+      #     # The packageName must already exist in the play console account, so make sure you upload a manual apk or aab first through the console
+      #     # https://github.com/r0adkll/upload-google-play/tree/v1/
+      #     packageName: com.thebest.gamchha
+      #     releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
+      #     track: internal
+      #     inAppUpdatePriority: 3
+      #     status: draft
+      #     # userFraction: 0.5
+      #     whatsNewDirectory: android/release-notes/
+      #     releaseName: v1.0.4
