@@ -19,8 +19,7 @@ jobs:
         run: |
           # Get the list of changed files between the base and head branches
           # CHANGED_FILES=$(git diff --name-only ${{ github.base_ref }}...${{ github.head_ref }})
-          git diff --name-only
-          CHANGED_FILES=$(git diff --name-only)
+          CHANGED_FILES=$(git log -1 --name-only --pretty=format:'')
           echo ${CHANGED_FILES}
 
           # Check if 'README.md' or '.yml' files are the only files changed
