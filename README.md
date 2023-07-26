@@ -1,4 +1,5 @@
 [![Dev CI/CD](https://github.com/dg1223/Gamchha/actions/workflows/ci-cd-develop.yml/badge.svg)](https://github.com/dg1223/Gamchha/actions/workflows/ci-cd-develop.yml)
+[![Staging CI/CD](https://github.com/dg1223/Gamchha/actions/workflows/staging-cd.yml/badge.svg)](https://github.com/dg1223/Gamchha/actions/workflows/staging-cd.yml)
 
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
