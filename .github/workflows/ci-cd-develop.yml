@@ -29,7 +29,7 @@ jobs:
             return 0
           fi
           echo "Changes to files other than README.md or *.yml detected. Proceeding with the CI/CD workflow."
-        continue-on-error: true
+        # continue-on-error: true
 
   test:
     needs: check_readme_changes
