@@ -23,6 +23,7 @@ jobs:
           echo ${CURRENT_COMMIT}
           CHANGED_FILES=$(git diff-tree --no-commit-id --name-only -r ${CURRENT_COMMIT})
           echo ${CHANGED_FILES} > changed_files.txt
+          cat changed_files.txt
 
           # Check if 'README.md' or '.yml' files are the only files changed
           if [[ ${CHANGED_FILES} =~ ^(README\.md|.*\.yml)$ && ! ${CHANGED_FILES} =~ ^(?!.*(README\.md|.*\.yml)).*$ ]]; then
