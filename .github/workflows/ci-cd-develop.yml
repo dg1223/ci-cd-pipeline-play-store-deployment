@@ -6,7 +6,7 @@ on:
       - develop
 
 jobs:
-  # Don't run CI/CD if only README.md is updated
+  # Don't run CI/CD if only README.md and/or any .yml file is updated
   check_readme_yml_changes:
     runs-on: ubuntu-latest
     outputs:
@@ -23,18 +23,15 @@ jobs:
         run: |
           # Get the list of changed files between the base and head branches
           CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-          echo ${CHANGED_FILES}          
-
           # Check if 'README.md' or '.yml' files are the only files changed
           if [[ ${CHANGED_FILES} =~ ^(README\.md|.*\.yml)$ && ! ${CHANGED_FILES} =~ ^(?!.*(README\.md|.*\.yml)).*$ ]]; then
             echo "Only README.md or .yml files have been updated. Skipping the CI/CD workflow."
-            echo "::set-output name=run_jobs::false"
+            # GITHUB_OUTPUT is a default GitHub env. variable
+            echo "run_jobs=false" >> ${GITHUB_OUTPUT}
           else
             echo "Changes to files other than README.md or *.yml detected. Proceeding with the CI/CD workflow."
-            echo "::set-output name=run_jobs::true"
+            echo "run_jobs=true" >> ${GITHUB_OUTPUT}
           fi
-
-        # continue-on-error: true
 
   test:
     needs: check_readme_yml_changes
