@@ -24,7 +24,7 @@ jobs:
           # Get the list of changed files between the base and head branches
           CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
           # Check if 'README.md' or '.yml' files are the only files changed
-          if [[ ${CHANGED_FILES} =~ ^(README\.md|.*\.yml|.*\.txt)$ && ! ${CHANGED_FILES} =~ ^(?!.*(README\.md|.*\.yml|.*\.txt)).*$ ]]; then
+          if [[ ${CHANGED_FILES} =~ ^(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore)$ && ! ${CHANGED_FILES} =~ ^(?!.*(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore)).*$ ]]; then
             echo "Only README.md or .yml or .txt files have been updated. Skipping the CI/CD workflow."
             # GITHUB_OUTPUT is a default GitHub env. variable
             echo "run_jobs=false" >> ${GITHUB_OUTPUT}
