@@ -1,2 +1,2 @@
-.github/workflows/*.yml merge=ours
 README.md merge=ours
+.github/workflows/*.yml merge=ours
