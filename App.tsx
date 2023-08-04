@@ -56,8 +56,8 @@ function App(): JSX.Element {
   );
 }
 
-// const RED_COLOR = 'red';
-const BLUE_COLOR = 'blue';
+const RED_COLOR = 'red';
+// const BLUE_COLOR = 'blue';
 const styles = StyleSheet.create({
   sectionHeader: {
     padding: 85,
@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
   highlight: {
     fontSize: 24,
     fontWeight: '700',
-    color: BLUE_COLOR,
+    // color: BLUE_COLOR,
+    color: RED_COLOR,
   },
 });
 
