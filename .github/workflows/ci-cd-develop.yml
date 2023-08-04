@@ -25,7 +25,7 @@ jobs:
           CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
           echo ${CHANGED_FILES}
           # Check if 'README.md' or '.yml' files are the only files changed
-          if [[ ${CHANGED_FILES} =~ ^(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore|build\.gradle)$ && ! ${CHANGED_FILES} =~ ^(?!.*(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore|build\.gradle)).*$ ]]; then
+          if [[ ${CHANGED_FILES} =~ ^(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore|.*\.gradle)$ && ! ${CHANGED_FILES} =~ ^(?!.*(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore|.*\.gradle)).*$ ]]; then
             echo "Only README.md or .yml or .txt files have been updated. Skipping the CI/CD workflow."
             # GITHUB_OUTPUT is a default GitHub env. variable
             echo "run_jobs=false" >> ${GITHUB_OUTPUT}
