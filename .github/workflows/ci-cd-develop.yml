@@ -29,9 +29,24 @@ jobs:
           SKIP_FILE_TYPES="^(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore|.*\.gradle)$"
           echo "SKIP_FILE_TYPES = ${SKIP_FILE_TYPES}"
 
-          # Check if 'README.md' or '.yml' files are the only files changed
-          if [[ ${CHANGED_FILES} =~ ${SKIP_FILE_TYPES} && ! ${CHANGED_FILES} =~ ^(?!.*${SKIP_FILE_TYPES}).*$ ]]; then
-            echo "Only README.md or .yml or .txt files have been updated. Skipping the CI/CD workflow."
+          # Split the CHANGED_FILES into an array
+          # IFS -> Internal Field Separator
+          IFS=' ' read -ra FILE_ARRAY <<< "${CHANGED_FILES}"
+
+          # Initialize a flag to check if any file matches the pattern
+          MATCH_FOUND=true
+
+          # Check if any file in the array matches the SKIP_FILE_TYPES pattern
+          for file in "${FILE_ARRAY[@]}"; do
+            if [[ ! ${file} =~ ${SKIP_FILE_TYPES} ]]; then
+              MATCH_FOUND=false
+              break
+            fi
+          done
+
+          # Check the MATCH_FOUND flag to determine if the if statement should be executed
+          if ${MATCH_FOUND}; then
+            echo "Only README.md, yml, txt, gitattributes, gitignore and/or gradle files has been updated. Skipping the CI/CD workflow."
             # GITHUB_OUTPUT is a default GitHub env. variable
             echo "run_jobs=false" >> ${GITHUB_OUTPUT}
           else
