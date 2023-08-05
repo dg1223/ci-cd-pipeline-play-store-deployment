@@ -23,24 +23,11 @@ jobs:
         run: |
           # Get the list of changed files between the base and head branches
           CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-          echo ${CHANGED_FILES}
+          echo "CHANGED_FILES = ${CHANGED_FILES}"
 
           # Define the regular expression pattern for allowed file types
           SKIP_FILE_TYPES="^(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore|.*\.gradle)$"
-          echo ${SKIP_FILE_TYPES}
-
-          # # Check if there are any changed files that are not allowed
-          # VALID_CHANGES=`echo "${CHANGED_FILES}" | grep -Ev "${SKIP_FILE_TYPES}"`
-          # echo ${VALID_CHANGES}
-
-          # if [ -n "${VALID_CHANGES}" ]; then
-          #   echo "Changes to files other than README.md, *.yml, .txt, .gitattributes, .gitignore, or .gradle detected. Proceeding with the CI/CD workflow."
-          #   echo "run_jobs=true" >> ${GITHUB_OUTPUT}
-          # else
-          #   echo "Only README.md, *.yml, .txt, .gitattributes, .gitignore, or .gradle files have been updated. Skipping the CI/CD workflow."
-          #   echo "run_jobs=false" >> ${GITHUB_OUTPUT}
-          # fi
-
+          echo "SKIP_FILE_TYPES = ${SKIP_FILE_TYPES}"
 
           # Check if 'README.md' or '.yml' files are the only files changed
           if [[ ${CHANGED_FILES} =~ ${SKIP_FILE_TYPES} && ! ${CHANGED_FILES} =~ ^(?!.*${SKIP_FILE_TYPES}).*$ ]]; then
