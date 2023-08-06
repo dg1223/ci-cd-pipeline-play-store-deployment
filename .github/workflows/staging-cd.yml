@@ -4,6 +4,9 @@ on:
   pull_request:
     branches:
       - staging
+  # push:
+  #   branches-ignore:
+  #     - staging
 
 jobs:
   # Don't run CI/CD if only README.md and/or any .yml file is updated
