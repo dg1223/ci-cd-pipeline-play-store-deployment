@@ -4,62 +4,19 @@ on:
   pull_request:
     branches:
       - staging
-  # push:
-  #   branches-ignore:
-  #     - staging
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+      - '**/*.gradle'
+      - '**/*.txt'
+      - '.gitignore'
+      - '.gitattributes'
+    types:
+      - closed
 
 jobs:
-  # Don't run CI/CD if only README.md and/or any .yml file is updated
-  check_readme_yml_txt_changes:
-    runs-on: ubuntu-latest
-    outputs:
-      run_rest_jobs: ${{ steps.set_output.outputs.run_jobs }}
-
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
-
-      - name: Check for README, yml or txt changes
-        id: set_output
-        run: |
-          # Get the list of changed files between the base and head branches
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.before }} ${{ github.event.after }})
-          echo "CHANGED_FILES = ${CHANGED_FILES}"
-
-          # Define the regular expression pattern for allowed file types
-          SKIP_FILE_TYPES="^(README\.md|.*\.yml|.*\.txt|\.gitattributes|\.gitignore|.*\.gradle)$"
-          echo "SKIP_FILE_TYPES = ${SKIP_FILE_TYPES}"
-
-          # Split the CHANGED_FILES into an array
-          # IFS -> Internal Field Separator
-          IFS=' ' read -ra FILE_ARRAY <<< "${CHANGED_FILES}"
-
-          # Initialize a flag to check if any file matches the pattern
-          MATCH_FOUND=true
-
-          # Check if any file in the array matches the SKIP_FILE_TYPES pattern
-          for file in "${FILE_ARRAY[@]}"; do
-            if [[ ! ${file} =~ ${SKIP_FILE_TYPES} ]]; then
-              MATCH_FOUND=false
-              break
-            fi
-          done
-
-          # Check the MATCH_FOUND flag to determine if the if statement should be executed
-          if ${MATCH_FOUND}; then
-            echo "Only README.md, yml, txt, gitattributes, gitignore and/or gradle files has been updated. Skipping the CI/CD workflow."
-            # GITHUB_OUTPUT is a default GitHub env. variable
-            echo "run_jobs=false" >> ${GITHUB_OUTPUT}
-          else
-            echo "Changes to files other than README.md, yml, txt, gitattributes, gitignore and/or gradle detected. Proceeding with the CI/CD workflow."
-            echo "run_jobs=true" >> ${GITHUB_OUTPUT}
-          fi
-
   test:
-    needs: check_readme_yml_txt_changes
-    if: needs.check_readme_yml_txt_changes.outputs.run_rest_jobs == 'true'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
