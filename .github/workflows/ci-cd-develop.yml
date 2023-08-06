@@ -4,6 +4,13 @@ on:
   push:
     branches:
       - develop
+    paths-ignore:
+      - '**/*.md'
+      - '**/*.yml'
+      - '**/*.gradle'
+      - '**/*.txt'
+      - '.gitignore'
+      - '.gitattributes'
 
 jobs:
   # Don't run CI/CD if only README.md and/or any .yml file is updated
