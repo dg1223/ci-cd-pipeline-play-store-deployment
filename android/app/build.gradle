@@ -69,18 +69,6 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
-def getVersionCode() {
-    def versionFile = file("../../version.json")
-    def versionJson = new groovy.json.JsonSlurper().parseText(versionFile.text)
-    return versionJson.versionCode
-}
-
-def getVersionName() {
-    def versionFile = file("../../version.json")
-    def versionJson = new groovy.json.JsonSlurper().parseText(versionFile.text)
-    return versionJson.versionName
-}
-
 android {
     ndkVersion rootProject.ext.ndkVersion
 
@@ -91,8 +79,8 @@ android {
         applicationId "com.thebest.gamchha"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 8
-        versionName "1.0.7"
+        versionCode 7
+        versionName "1.0.6"
     }
     signingConfigs {
         debug {
