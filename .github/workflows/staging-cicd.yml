@@ -212,6 +212,7 @@ jobs:
           packageName: com.thebest.gamchha
           releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
           track: alpha
+          status: draft
           inAppUpdatePriority: 3
           whatsNewDirectory: android/release-notes/
           releaseName: v1.0.0.a

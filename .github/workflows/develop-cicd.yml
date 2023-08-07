@@ -208,8 +208,7 @@ jobs:
           packageName: com.thebest.gamchha
           releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
           track: internal
-          inAppUpdatePriority: 3
           status: draft
-          # userFraction: 0.5
+          inAppUpdatePriority: 3
           whatsNewDirectory: android/release-notes/
           releaseName: v1.0.6
