@@ -1,9 +1,9 @@
-name: Dev CI/CD
+name: Production CI/CD
 
 on:
-  push:
+  pull_request:
     branches:
-      - develop
+      - main
     paths-ignore:
       - '**/*.md'
       - '**/*.yml'
@@ -11,9 +11,13 @@ on:
       - '**/*.txt'
       - '.gitignore'
       - '.gitattributes'
+    types:
+      - closed
 
 jobs:
   test:
+    # only run workflow after PR is merged
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
@@ -171,7 +175,7 @@ jobs:
           name: Signed App Bundle
           path: ${{steps.sign_app.outputs.signedReleaseFile}}
 
-      - name: Deploy to Play Store (Internal testing)
+      - name: Deploy to Play Store (Alpha)
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.ANDROID_SERVICE_ACCOUNT }}
@@ -179,8 +183,8 @@ jobs:
           # https://github.com/r0adkll/upload-google-play/tree/v1/
           packageName: com.thebest.gamchha
           releaseFiles: ${{steps.sign_app.outputs.signedReleaseFile}}
-          track: internal
+          track: production
           status: draft
           inAppUpdatePriority: 3
           whatsNewDirectory: android/release-notes/
-          releaseName: v1.0.10
+          releaseName: v1.0.0.p
