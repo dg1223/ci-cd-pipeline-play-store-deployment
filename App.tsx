@@ -68,8 +68,8 @@ const styles = StyleSheet.create({
   highlight: {
     fontSize: 24,
     fontWeight: '700',
-    // color: 'blue',
-    color: 'red',
+    color: 'blue',
+    // color: 'red',
   },
 });
 
