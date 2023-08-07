@@ -1,0 +1,6 @@
+README.md merge=ours
+.github/workflows/*.yml merge=ours
+android/build.gradle merge=ours
+android/app/build.gradle merge=ours
+.gitattributes merge=ours
+.gitignore merge=ours
