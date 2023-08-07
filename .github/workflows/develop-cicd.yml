@@ -92,6 +92,20 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Increment versionCode
+        id: increment_version
+        run: |
+          # Extract the current versionCode from build.gradle
+          current_version_code=$(grep 'versionCode' android/app/build.gradle | awk -F ' ' '{print $2}')
+
+          # Increment the versionCode by 1
+          new_version_code=$((current_version_code + 1))
+
+          # Update the build.gradle file with the new versionCode
+          sed -i "s/versionCode ${current_version_code}/versionCode ${new_version_code}/" android/app/build.gradle
+
+          echo "NEW_VERSION_CODE=${new_version_code}" >> ${GITHUB_OUTPUT}
+
       # - name: Read Version
       #   id: read-version
       #   run: |
