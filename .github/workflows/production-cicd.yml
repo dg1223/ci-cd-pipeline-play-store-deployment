@@ -127,24 +127,6 @@ jobs:
       - name: Make Gradlew Executable
         run: cd android && chmod +x ./gradlew
 
-      # - name: Generate App APK
-      #   run: |
-      #     cd android && ./gradlew assembleRelease --no-daemon
-
-      # - name: Sign generated APK
-      #   id: sign_app
-      #   uses: r0adkll/sign-android-release@v1
-      #   with:
-      #     releaseDirectory: android/app/build/outputs/apk/release
-      #     signingKeyBase64: ${{ secrets.ANDROID_SIGNING_KEY }}
-      #     alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
-      #     keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
-      #     keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
-
-      # - name: Check app directory after signing (debug)
-      #   run: |
-      #     ls -a android/app/build/outputs/apk/release
-
       - name: Build Android App Bundle
         run: cd android && ./gradlew bundleRelease --no-daemon
 
@@ -157,17 +139,6 @@ jobs:
           alias: ${{ secrets.ANDROID_SIGNING_ALIAS }}
           keyStorePassword: ${{ secrets.ANDROID_SIGNING_STORE_PASSWORD }}
           keyPassword: ${{ secrets.ANDROID_SIGNING_KEY_PASSWORD }}
-
-      # ## Distribute app to Firebase App Distribution for testing
-      # ## Use google play internal track if you have a google play account
-      # ## (uncomment the sections below if you want to use Play Store)
-      # - name: Upload artifact to Firebase App Distribution
-      #   uses: wzieba/Firebase-Distribution-Github-Action@v1
-      #   with:
-      #     appId: ${{secrets.ANDROID_FIREBASE_APP_ID}}
-      #     token: ${{secrets.ANDROID_FIREBASE_TOKEN}}
-      #     groups: testers
-      #     file: ${{steps.sign_app.outputs.signedReleaseFile}}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
