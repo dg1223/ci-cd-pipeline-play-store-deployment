@@ -2,9 +2,7 @@
 [![Staging CI/CD](https://github.com/dg1223/Gamchha/actions/workflows/staging-cicd.yml/badge.svg)](https://github.com/dg1223/Gamchha/actions/workflows/staging-cicd.yml)&nbsp;
 [![Production CI/CD](https://github.com/dg1223/Gamchha/actions/workflows/production-cicd.yml/badge.svg)](https://github.com/dg1223/Gamchha/actions/workflows/production-cicd.yml)
 
-# The Gamchha App
-
-A dummy React Native app to implement a complete CI/CD pipeline using GitHub Actions.
+Deployment of a complete CI/CD pipeline for a React Native app using GitHub Actions.
 
 ## Objective
 
